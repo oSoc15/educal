@@ -71,6 +71,7 @@ class CalendarController extends \BaseController
      */
     public static function getAppointmentsBySlugs($school_slug, $calendar_slugs)
     {
+        
         $calendar_slugs_array = explode('+', $calendar_slugs);
         $appointments = array();
 
@@ -78,12 +79,17 @@ class CalendarController extends \BaseController
 
             try {
                 if ($slug == 'all') {
-                    return Appointment::all();
+                    $school = School::getBySlug($school_slug);
+                    $calendars = Calendar::where('school_id', '=', $school->id)->get();
+                    foreach ($calendars as $calendar) {
+                        foreach (Appointment::where('calendar_id', '=', $calendar->id)->get() as $appointment) {
+                            $appointments[] = $appointment;
+                        }
+                    }
+                } else {
+                    $calendar = CalendarController::getCalendar($school_slug, $slug);
+                    $appointments[] = CalendarController::getAppointments($calendar);
                 }
-                $calendar = CalendarController::getCalendar($school_slug,
-                    $slug);
-
-                $appointments += CalendarController::getAppointments($calendar);
 
             } catch (Illuminate\Database\Eloquent\ModelNotFoundException $e) {
                 // ignore invalid calendars

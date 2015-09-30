@@ -54,7 +54,7 @@ class Calendar extends Eloquent
 
     public function getChildren()
     {
-        return Calendar::where('parent_id', $this->id)->get();
+        return Calendar::where('parent_id', $this->id)->orderBy('name')->get();
     }
 
     /**
@@ -74,7 +74,10 @@ class Calendar extends Eloquent
      */
     public static function getRootCalendars($school_id)
     {
-        return Calendar::where('school_id', $school_id)->where('parent_id', null)->get();
+        return Calendar::where('school_id', $school_id)
+          ->orderBy('name')
+          ->where('parent_id', NULL)
+          ->get();
     }
 
     /**
@@ -84,7 +87,7 @@ class Calendar extends Eloquent
      */
     public static function getSchoolCalendars($school_id)
     {
-        return Calendar::where('school_id', $school_id)->get();
+        return Calendar::where('school_id', $school_id)->orderBy('name')->get();
     }
 
     public function getEditableAttribute()
