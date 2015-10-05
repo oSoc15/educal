@@ -58,6 +58,7 @@ var editor = (function() {
       close();
       console.log()
       $cal.fullCalendar('removeEvents', active.ev.id);
+      active.ev.id = 0;
     }).error(function(data) {
       close();
     });
